@@ -7,6 +7,8 @@
 *.out
 *.toc
 *.fmt
+*.pdf
+*.llt
 
 ## Intermediate documents:
 *.dvi
