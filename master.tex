@@ -32,7 +32,9 @@
     \and E.~Delgado Mena\inst{1}
     \and N.~C.~Santos\inst{1,2}
     \and M.~Tsantaki\inst{3}
-    \and G.~Teixeira\inst{1}}
+    \and G.~Teixeira\inst{1}
+    \and L.~Andrez\inst{4}
+}
 
 
 \institute{
@@ -42,6 +44,8 @@ Instituto de Astrof\'isica e Ci\^encias do Espa\c{c}o, Universidade do Porto, CA
 Departamento de F\'isica e Astronomia, Faculdade de Ci\^encias, Universidade do Porto, Rua Campo Alegre, 4169-007 Porto, Portugal
 \and
 Astronomy, Mexico
+\and
+IAC
 }
 
 
@@ -77,6 +81,77 @@ Astronomy, Mexico
 
 \section{Results}
 \label{sec:results}
+Here we present the sample of 66 stars. We were unable to derive parameters for
+HD77065. This is a spectroscopic binary according to \cite{Pourbaix2004}.
+
+The remaining 65 stars are presented in Table~\ref{tab:results}
+
+
+\begin{table*}[htb!]
+    \caption{The derived parameters for the 65 stars in our sample.}
+    \label{tab:results}
+    \centering
+    \begin{tabular}{lllll}
+      \hline\hline
+        Star      & $T_\mathrm{eff}$ (K) & $\log g$ (dex)      &  [Fe/H] (dex)        & $\xi_\mathrm{micro}$ (km/s)  & $\xi_\mathrm{micro}$ fixed ? \\
+      \hline
+      WASP-762    &    $6347 \pm 52 $    &  $4.29 \pm 0.08$    &  $ 0.36 \pm 0.04$    &  $1.73 \pm 0.06$             &   no  \\
+      WASP-822    &    $6563 \pm 55 $    &  $4.29 \pm 0.10$    &  $ 0.18 \pm 0.04$    &  $1.93 \pm 0.08$             &   no  \\
+      WASP-882    &    $6450 \pm 61 $    &  $4.24 \pm 0.06$    &  $ 0.03 \pm 0.04$    &  $1.79 \pm 0.09$             &   no  \\
+      WASP-952    &    $5799 \pm 31 $    &  $4.29 \pm 0.05$    &  $ 0.22 \pm 0.03$    &  $1.18 \pm 0.04$             &   no  \\
+      WASP-972    &    $5723 \pm 52 $    &  $4.37 \pm 0.07$    &  $ 0.31 \pm 0.04$    &  $1.03 \pm 0.08$             &   no  \\
+      WASP-992    &    $6324 \pm 89 $    &  $4.70 \pm 0.11$    &  $ 0.27 \pm 0.06$    &  $1.83 \pm 0.12$             &   no  \\
+      HATS-12     &    $5969 \pm 46 $    &  $4.61 \pm 0.06$    &  $-0.04 \pm 0.04$    &  $1.06 \pm 0.08$             &   no  \\
+      Qatar-22    &    $4637 \pm 316$    &  $4.23 \pm 0.61$    &  $ 0.09 \pm 0.17$    &  $0.63 \pm 0.83$             &   no  \\
+      WASP-442    &    $5612 \pm 80 $    &  $4.47 \pm 0.30$    &  $ 0.17 \pm 0.06$    &  $1.32 \pm 0.13$             &   no  \\
+      HAT-P-462   &    $6421 \pm 121$    &  $4.53 \pm 0.14$    &  $ 0.16 \pm 0.09$    &  $1.67 \pm 0.18$             &   no  \\
+      WASP-522    &    $5197 \pm 83 $    &  $4.47 \pm 0.30$    &  $ 0.15 \pm 0.05$    &  $1.16 \pm 0.14$             &   no  \\
+      WASP-722    &    $6570 \pm 85 $    &  $4.71 \pm 0.13$    &  $ 0.15 \pm 0.06$    &  $2.30 \pm 0.15$             &   no  \\
+      WASP-752    &    $6203 \pm 46 $    &  $4.42 \pm 0.22$    &  $ 0.24 \pm 0.03$    &  $1.45 \pm 0.06$             &   no  \\
+      HAT-P-422   &    $5903 \pm 66 $    &  $4.29 \pm 0.10$    &  $ 0.34 \pm 0.05$    &  $1.19 \pm 0.08$             &   no  \\
+      HATS-52     &    $5383 \pm 91 $    &  $4.40 \pm 0.22$    &  $ 0.08 \pm 0.06$    &  $0.91 \pm 0.14$             &   no  \\
+      HD2855072   &    $4620 \pm 126$    &  $4.42 \pm 0.61$    &  $ 0.04 \pm 0.06$    &  $0.74 \pm 0.43$             &   no  \\
+      HR2282      &    $5042 \pm 42 $    &  $3.30 \pm 0.09$    &  $ 0.07 \pm 0.03$    &  $1.14 \pm 0.04$             &   no  \\
+      SAND3642    &    $4457 \pm 104$    &  $2.26 \pm 0.20$    &  $-0.04 \pm 0.06$    &  $1.60 \pm 0.11$             &   no  \\
+      Aldebaran   &    $5279 \pm 223$    &  $4.53 \pm 0.40$    &  $ 0.14 \pm 0.12$    &  $3.05 \pm 0.41$             &   no  \\
+      Gl785       &    $5087 \pm 48 $    &  $4.30 \pm 0.10$    &  $-0.01 \pm 0.03$    &  $0.69 \pm 0.10$             &   no  \\
+      HD120084    &    $4969 \pm 40 $    &  $2.94 \pm 0.14$    &  $ 0.12 \pm 0.03$    &  $1.41 \pm 0.04$             &   no  \\
+      HD192263    &    $4946 \pm 46 $    &  $4.43 \pm 0.14$    &  $-0.05 \pm 0.02$    &  $0.66 \pm 0.12$             &   no  \\
+      HD207229    &    $4957 \pm 49 $    &  $2.83 \pm 0.09$    &  $ 0.04 \pm 0.04$    &  $1.49 \pm 0.05$             &   no  \\
+      HD219134    &    $4767 \pm 70 $    &  $4.32 \pm 0.17$    &  $-0.00 \pm 0.04$    &  $0.59 \pm 0.24$             &   no  \\
+      HD81688     &    $4870 \pm 30 $    &  $2.50 \pm 0.14$    &  $-0.26 \pm 0.03$    &  $1.50 \pm 0.03$             &   no  \\
+      HD82886     &    $5124 \pm 22 $    &  $3.30 \pm 0.05$    &  $-0.25 \pm 0.02$    &  $1.15 \pm 0.03$             &   no  \\
+      HD85503     &    $4605 \pm 94 $    &  $2.61 \pm 0.26$    &  $ 0.25 \pm 0.06$    &  $1.64 \pm 0.11$             &   no  \\
+      HD87883     &    $4917 \pm 68 $    &  $4.34 \pm 0.19$    &  $ 0.02 \pm 0.03$    &  $0.46 \pm 0.21$             &   no  \\
+      HIP11915    &    $5770 \pm 14 $    &  $4.47 \pm 0.03$    &  $-0.06 \pm 0.01$    &  $0.95 \pm 0.02$             &   no  \\
+      omiUma      &    $5499 \pm 52 $    &  $3.36 \pm 0.07$    &  $-0.01 \pm 0.05$    &  $1.98 \pm 0.06$             &   no  \\
+      11Com       &    $4911 \pm 38 $    &  $2.68 \pm 0.08$    &  $-0.20 \pm 0.03$    &  $1.56 \pm 0.04$             &   no  \\
+      HD102272    &    $5351 \pm 135$    &  $3.92 \pm 0.33$    &  $-0.34 \pm 0.11$    &  $1.16 \pm 0.20$             &   no  \\
+      HD104985    &    $4809 \pm 48 $    &  $2.73 \pm 0.08$    &  $-0.26 \pm 0.04$    &  $1.65 \pm 0.05$             &   no  \\
+      HD114762    &    $6058 \pm 83 $    &  $4.71 \pm 0.09$    &  $-0.78 \pm 0.05$    &  $0.00 \pm 0.23$             &   no  \\
+      HD114762    &    $6061 \pm 83 $    &  $4.70 \pm 0.08$    &  $-0.78 \pm 0.05$    &  $0.02 \pm 0.26$             &   no  \\
+      HD136512    &    $4915 \pm 33 $    &  $2.74 \pm 0.08$    &  $-0.14 \pm 0.03$    &  $1.57 \pm 0.04$             &   no  \\
+      HD152581    &    $5355 \pm 82 $    &  $3.65 \pm 0.18$    &  $-0.39 \pm 0.07$    &  $0.60 \pm 0.15$             &   no  \\
+      HD155358    &    $5917 \pm 51 $    &  $4.12 \pm 0.08$    &  $-0.55 \pm 0.04$    &  $1.06 \pm 0.08$             &   no  \\
+      HD170693    &    $4547 \pm 55 $    &  $2.23 \pm 0.10$    &  $-0.31 \pm 0.03$    &  $1.54 \pm 0.05$             &   no  \\
+      HD220842    &    $6027 \pm 30 $    &  $4.35 \pm 0.05$    &  $-0.08 \pm 0.03$    &  $1.19 \pm 0.04$             &   no  \\
+      HD221345    &    $4797 \pm 44 $    &  $2.58 \pm 0.11$    &  $-0.23 \pm 0.03$    &  $1.58 \pm 0.04$             &   no  \\
+      HD233604    &    $4925 \pm 44 $    &  $2.79 \pm 0.11$    &  $-0.15 \pm 0.03$    &  $1.62 \pm 0.05$             &   no  \\
+      HD37124     &    $5468 \pm 32 $    &  $4.28 \pm 0.04$    &  $-0.43 \pm 0.03$    &  $0.67 \pm 0.07$             &   no  \\
+      HD81688a    &    $4906 \pm 29 $    &  $2.69 \pm 0.06$    &  $-0.21 \pm 0.02$    &  $1.60 \pm 0.03$             &   no  \\
+      HD82886     &    $5252 \pm 66 $    &  $3.67 \pm 0.13$    &  $-0.41 \pm 0.06$    &  $0.06 \pm 0.10$             &   no  \\
+      HD97658     &    $5182 \pm 43 $    &  $4.50 \pm 0.12$    &  $-0.29 \pm 0.03$    &  $0.77 \pm 0.11$             &   no  \\
+      Kepler-444  &    $5163 \pm 40 $    &  $4.41 \pm 0.11$    &  $-0.50 \pm 0.03$    &  $0.78 \pm 0.10$             &   no  \\
+      WASP-100    &    $6853 \pm 209$    &  $4.15 \pm 0.26$    &  $-0.30 \pm 0.12$    &  $1.87 \pm 0.02$             &  yes  \\
+      HAT-P-242   &    $6470 \pm 181$    &  $4.75 \pm 0.26$    &  $-0.41 \pm 0.10$    &  $1.40 \pm 0.03$             &  yes  \\
+      HAT-P-392   &    $6745 \pm 236$    &  $4.91 \pm 0.46$    &  $-0.21 \pm 0.12$    &  $1.53 \pm 0.04$             &  yes  \\
+      WASP-612    &    $6265 \pm 168$    &  $4.21 \pm 0.21$    &  $-0.38 \pm 0.11$    &  $1.44 \pm 0.02$             &  yes  \\
+      HD70573     &    $5889 \pm 186$    &  $4.32 \pm 0.27$    &  $-0.42 \pm 0.13$    &  $1.14 \pm 0.01$             &  yes  \\
+      \hline
+    \end{tabular}
+\end{table*}
+
+
 
 
 
@@ -101,10 +176,6 @@ cooperation project FCT/CAPES - 2014/2015 (FCT Proc 4.4.1.00 CAPES).
 
 This research has made use of the SIMBAD database operated at CDS,
 Strasbourg (France).
-
-This work has made use of the VALD database, operated at Uppsala
-University, the Institute of Astronomy RAS in Moscow, and the University
-of Vienna.
 
 \end{acknowledgements}
 
