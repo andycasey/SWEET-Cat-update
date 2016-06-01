@@ -138,7 +138,7 @@ spectra. Here measured EWs are used to calculate abundances using a given
 stellar atmosphere model with a given set of atmospheric parameters,
 effective temperature ($T_\mathrm{eff}$), surface gravity ($\log g$),
 metallicity ([Fe/H], where iron often is used as a proxy), and the micro
-turbulence (\xi_\mathrm{micro}). By removing correlations between the measured
+turbulence ($\xi_\mathrm{micro}$). By removing correlations between the measured
 abundances (through the measured EWs) and the excitation potential and reduced
 EW ($\log(EW/\lambda)$) we can constrain $T_\mathrm{eff}$ and $\xi_\mathrm{micro}$. By
 obtaining ionization balance between \ion{Fe}{I} and \ion{Fe}{II}, that is
@@ -206,12 +206,12 @@ will be described here.
 
 \begin{itemize}
     \item[model] Change which type of model atmosphere to use. Currently the
-          following are available: Kurucz '95, Marcs, and Kurucz from APOGEE.
+          following are available: Kurucz 95, Marcs, and Kurucz from APOGEE.
     \item[weights] Calculate the slopes with an weight based on the distance
           from the mean.
-    \item[fix_teff] Fix $T_\mathrm{eff}$. Same is available for $\log g$
-          (fix_logg), [\ion{Fe}/\ion{H}] (fix_feh), and $\xi_\mathrm{micro}$
-          (fix_vt).
+    \item[fixteff] Fix $T_\mathrm{eff}$. Same is available for $\log g$
+          (fixlogg), [\ion{Fe}/\ion{H}] (fixfeh), and $\xi_\mathrm{micro}$
+          (fixvt).
     \item[iterations] The maximum number of iterations (160 by default).
     \item[EPcrit] The criteria for $a_\mathrm{EP}$ to reach convergence (0.001
           by default).
