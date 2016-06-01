@@ -9,6 +9,7 @@
 *.fmt
 *.pdf
 *.llt
+!master.pdf
 
 ## Intermediate documents:
 *.dvi
