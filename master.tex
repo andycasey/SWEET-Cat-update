@@ -127,13 +127,134 @@ abundance method, both described below.
 \subsection{Synthetic fitting}
 \label{sub:Synthetic_fitting}
 
+FOR MARIA :)
 
 
 
+\subsection{EW method}
+\label{sub:EW_method}
+This is the second standard method for obtaining parameters from stellar
+spectra. Here measured EWs are used to calculate abundances using a given
+stellar atmosphere model with a given set of atmospheric parameters,
+effective temperature ($T_\mathrm{eff}$), surface gravity ($\log g$),
+metallicity ([Fe/H], where iron often is used as a proxy), and the micro
+turbulence (\xi_\mathrm{micro}). By removing correlations between the measured
+abundances (through the measured EWs) and the excitation potential and reduced
+EW ($\log(EW/\lambda)$) we can constrain $T_\mathrm{eff}$ and $\xi_\mathrm{micro}$. By
+obtaining ionization balance between \ion{Fe}{I} and \ion{Fe}{II}, that is
+the average abundance of all \ion{Fe}{I} lines are equal to the average
+abundance of all \ion{Fe}{II} lines, we constrain $\log g$. Last, we change
+the input [\ion{Fe}/\ion{H}] to match that of the average output
+[\ion{Fe}/\ion{H}]. Hence we have four criteria to minimize simultaneously:
+
+\begin{enumerate}
+    \item The slope between abundance and excitation potential ($a_\mathrm{EP}$).
+    \item The slope between abundance and reduced EW ($a_\mathrm{RW}$).
+    \item The difference between the average abundances of \ion{Fe}{I} and
+          \ion{Fe}{II} ($\Delta$\ion{Fe}).
+    \item Input and output metallicity.
+\end{enumerate}
+
+There exists many minimization routines available in Python. Most commonly
+known are the ones from the SciPy ecosystem\footnote{\url{http.scipy.org}}.
+There are some pros and cons with using proprietary minimization routines.
+Pros are that it is already written, and usually there are good documentation
+in libraries such as SciPy. Cons in this situation is, that most minimization
+routines are not able to handle multiple criteria at once. A work around is
+to combine the criteria into one single criteria by e.g. adding them
+quadratically and minimize that expression instead. The minimization routines
+are also not physical in the sense that they are not optimized for the problem.
+These two cons was incitement for writing a minimization optimized for our
+problem. Here is how it works.
+
+\begin{enumerate}
+    \item Run MOOG once with a user defined initial parameters (default is
+          solar) and calculate $a_\mathrm{EP}$, $a_\mathrm{RW}$, and
+          $\Delta$\ion{Fe}.
+    \item Change the atmospheric parameters ($T_\mathrm{eff}$, $\log g$,
+          [\ion{Fe}/\ion{H}], $\xi_\mathrm{micro}$) according to the size of the
+          indicator. A parameter is only changed if it is not fixed.
+    \begin{itemize}
+        \item $a_\mathrm{EP}$: Indicator for $T_\mathrm{eff}$. If this value
+              is positive, then increase $T_\mathrm{eff}$.
+        \item $a_\mathrm{RW}$: Same as above but for $\xi_\mathrm{micro}$.
+        \item $\Delta$\ion{Fe}: Same as above but for $\log g$. Positive
+              $\Delta$\ion{Fe} means $\log g$ should be decreased.
+    \end{itemize}
+    \item For [\ion{Fe}/\ion{H}] it is changed to the output [\ion{Fe}/\ion{H}]
+          in each iteration (if free).
+    \item If the new parameters have already been used in a previous, then
+          change them slightly. This is done by drawing a random number from
+          a Gaussian distribution with a mean at the previous value and a sigma
+          equal to the absolute value of the indicator.
+    \item Calculate a new atmospheric model by interpolating a grid so we have
+          the requested parameters and run MOOG once again.
+    \item For each iteration save the parameters used and the quadratic sum of
+          the indicators. If we do not reach convergence, then return the best
+          found parameters.
+\end{enumerate}
+
+By using the indicators like this, we can relative fast reach convergence.
+There are some interdependencies among the indicators. E.g. by changing
+$T_\mathrm{eff}$ all indicators will be affected, however the effect is
+strongest for $a_\mathrm{EP}$.
+
+\subsubsection{Options}
+\label{subs:EWoptions}
+It is possible to run the EW method with a set of different options which
+will be described here.
+
+\begin{itemize}
+    \item[model] Change which type of model atmosphere to use. Currently the
+          following are available: Kurucz '95, Marcs, and Kurucz from APOGEE.
+    \item[weights] Calculate the slopes with an weight based on the distance
+          from the mean.
+    \item[fix_teff] Fix $T_\mathrm{eff}$. Same is available for $\log g$
+          (fix_logg), [\ion{Fe}/\ion{H}] (fix_feh), and $\xi_\mathrm{micro}$
+          (fix_vt).
+    \item[iterations] The maximum number of iterations (160 by default).
+    \item[EPcrit] The criteria for $a_\mathrm{EP}$ to reach convergence (0.001
+          by default).
+    \item[RWcrit] The criteria for $a_\mathrm{RW}$ to reach convergence (0.003
+          by default).
+    \item[ABdiffcrit] The criteria for $\Delta$\ion{Fe} to reach convergence
+          (0.01 by default).
+    \item[MOOGv] The version of MOOG being used (2014 by default).
+    \item[outlier] Remove outliers after the first run with the minimization
+          routine and restarting the minimization from the previous best
+          parameters. The options are to remove all outliers above $3\sigma$
+          once or iteratively, or remove one outlier above $3\sigma$ once or
+          iteratively.
+    \item[autofixvt] If the minimization routine does not converge and
+          $\xi_\mathrm{micro}$ is close to 0 or 10 with a significant
+          $a_\mathrm{RW}$, then fix $\xi_\mathrm{micro}$.
+    \item[teffrange] This is a special option for two of the line list shipped
+          with MOOGme. The ones from \citet{Sousa2015b} and \citet{Tsantaki2013}.
+          The latter is a subset of the former optimized for cooler stars.
+          If this option is set, and the former line list is used for a cool
+          star ($T_\mathrm{eff}$ found after the minimization), then remove
+          the lines from the used line list to match the latter line list and
+          rerun the minimization routine.
+    \item[refine] After the minimization is done, run it again from the best
+          found parameters but with more strict criteria. If this option is set,
+          it will always be the last step (after removal of outliers and the
+          use of teffrange).
+\end{itemize}
+
+If $\xi_\mathrm{micro}$ is fixed it is changed at each iteration according to
+an empirical relation. For dwarfs it follows the one presented in
+\citet{Tsantaki2013} and for giants it follows the one presented in
+\citet{Adibekyan2015} (THIS IS NOT TRUE. NOT RIGHT REFERENCE FOR VARDAN).
 
 
 
+\subsection{Abundance method}
+\label{sub:Abundance_method}
 
+We made a mode to calculate abundances for different elements based on the
+measured EW. Here we require a line list with the EW of the elements and
+the corresponding atmospheric parameters for the star of interest. We provide
+a line list with XXX elements ready to use. The results are saved to a table.
 
 
 
