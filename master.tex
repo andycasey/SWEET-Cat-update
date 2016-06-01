@@ -29,11 +29,11 @@
 
 \author{ D.~T.~Andreasen\inst{1,2}
     \and S.~G.~Sousa\inst{1}
-    \and E.~Delgado Mena\inst{1}
     \and N.~C.~Santos\inst{1,2}
     \and M.~Tsantaki\inst{3}
     \and G.~Teixeira\inst{1}
     \and L.~Andrez\inst{4}
+    \and A.~Mortier\inst{5}
 }
 
 
@@ -46,6 +46,8 @@ Departamento de F\'isica e Astronomia, Faculdade de Ci\^encias, Universidade do 
 Astronomy, Mexico
 \and
 IAC
+\and
+Astronomy, Scotland
 }
 
 
@@ -77,9 +79,73 @@ IAC
 
 \section{Introduction}
 \label{sec:introduction}
+The study of extrasolar planetary systems is an established field of research.
+To date, over 3200 extrasolar planets have been discovered around solar-type
+stars\footnote{For an updated table we refer to \url{http://ww.exoplanet.eu}}.
+Most of these have been found thanks to the incredible precision achieved in
+photometric transit and radial velocity. Especially the latest announcement
+from the \emph{Kepler} space mission with 1284 confirmed exoplanets
+\citep{Morton2016}. The increasing number of exoplanets allow us to do
+statistical studies of the newfound worlds by analyzing their internal
+structure, atmospheric composition, with more.
+
+A key aspect to this progress is the characterization of the planet host stars.
+For instance, precise and accurate stellar radii are critical if we want to
+measure oresice values of the radius of a transiting planet
+\citep[see e.g.][]{Torres2012}. The determination of the stellar radius
+is in turn dependent on the quality of the derived stellar parameters such as
+the effective temperature.
 
 
-\section{Results}
+
+\section{MOOGme}
+\label{sec:MOOGme}
+
+MOOGme (acronym for MOOG made easy) is a new tool for analyzing spectra.
+MOOGme is written in Python and works as a wrapper around MOOG
+\citep{Sneden1973}, and ARES \citep{Sousa2015a} for an all-in-one tool.
+MOOG is a radiative transfer code under the assumption of local
+thermodynamic equilibrium (LTE). And ARES is a tool to measure equivalent
+widths (EW) automatically from a spectrum given a line list. MOOGme has
+four different functions: Measure EWs with ARES, synthetic fitting, EW method,
+and abundances, all described below.
+
+\subsection{EW measurements}
+\label{sub:EW_measurements}
+EW measurements are important for the EW method and to obtain abundances. This
+can be done manually using a tool like IRAF, but often when dealing with a large
+sample of stars this is not a suitable way to deal with the problem. Therefore
+tools like ARES exists which can measure the EW of spectral lines automatically.
+To use this mode of MOOGme, ARES has to be installed and be in the PATH. Then
+MOOGme just need a spectrum (format should be 1D for ARES to read it) and a line
+list. For the latter, MOOGme is shipped with some line lists ready to use, in
+the format suitable for MOOGme. The output will be a line list in the format
+required for MOOG. The output can be used for either the EW method or the
+abundance method, both described below.
+
+
+\subsection{Synthetic fitting}
+\label{sub:Synthetic_fitting}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{New spectroscopic parameters for 65 planet hosts}
 \label{sec:results}
 Here we present the sample of 66 stars. We were unable to derive parameters for
 HD77065. This is a spectroscopic binary according to \cite{Pourbaix2004}.
@@ -91,9 +157,9 @@ The remaining 65 stars are presented in Table~\ref{tab:results}
     \caption{The derived parameters for the 65 stars in our sample.}
     \label{tab:results}
     \centering
-    \begin{tabular}{lllll}
+    \begin{tabular}{llllll}
       \hline\hline
-        Star      & $T_\mathrm{eff}$ (K) & $\log g$ (dex)      &  [Fe/H] (dex)        & $\xi_\mathrm{micro}$ (km/s)  & $\xi_\mathrm{micro}$ fixed ? \\
+        Star      & $T_\mathrm{eff}$ (K) &  $\log g$ (dex)     &  [Fe/H] (dex)        &  $\xi_\mathrm{micro}$ (km/s) & $\xi_\mathrm{micro}$ fixed? \\
       \hline
       WASP-762    &    $6347 \pm 52 $    &  $4.29 \pm 0.08$    &  $ 0.36 \pm 0.04$    &  $1.73 \pm 0.06$             &   no  \\
       WASP-822    &    $6563 \pm 55 $    &  $4.29 \pm 0.10$    &  $ 0.18 \pm 0.04$    &  $1.93 \pm 0.08$             &   no  \\
