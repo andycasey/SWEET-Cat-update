@@ -157,6 +157,15 @@ the input [\ion{Fe}/\ion{H}] to match that of the average output
     \item Input and output metallicity.
 \end{enumerate}
 
+Which we together denote as indicators.
+
+\begin{figure}[tpb]
+    \centering
+    \includegraphics[width=1.0\linewidth]{figures/MOOGme_general.pdf}
+    \caption{A general overview over MOOGme from spectrum to parameters.}
+    \label{fig:MOOGme_general}
+\end{figure}
+
 There exists many minimization routines available in Python. Most commonly
 known are the ones from the SciPy ecosystem\footnote{\url{http.scipy.org}}.
 There are some pros and cons with using proprietary minimization routines.
@@ -195,6 +204,19 @@ problem. Here is how it works.
           the indicators. If we do not reach convergence, then return the best
           found parameters.
 \end{enumerate}
+
+
+
+\begin{figure}[tpb]
+    \centering
+    \includegraphics[width=1.0\linewidth]{figures/MOOGme_minimization.pdf}
+    \caption{A schematic overview over the minimization for MOOGme with the
+    EW method.}
+    \label{fig:MOOGme_minimization}
+\end{figure}
+
+
+
 
 By using the indicators like this, we can relative fast reach convergence.
 There are some interdependencies among the indicators. E.g. by changing
