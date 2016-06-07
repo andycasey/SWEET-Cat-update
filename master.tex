@@ -4,7 +4,8 @@
 \usepackage[separate-uncertainty=true]{siunitx}
 \usepackage[version=3]{mhchem}
 
-\sisetup{range-units = brackets}
+\sisetup{range-units = single}
+\sisetup{range-phrase = -}
 
 \def\eps{\varepsilon}
 \def\aap{A\&A}
@@ -283,6 +284,32 @@ a line list with XXX elements ready to use. The results are saved to a table.
 
 
 
+
+
+\section{Testing MOOGme}
+\label{sec:Testing_MOOGme}
+To adequate test the EW method implemented in MOOGme we derive
+parameters from the sample by \citet{Sousa2008a}. We use ARES2
+to measure the EWs. ARES can give an estimate on the signal to
+noise ratio (SNR) by analyzing the continuum in given intervals.
+For solar type stars the following intervals are working well:
+\SIrange{5764}{5766}{\angstrom}, \SIrange{6047}{6053}{\angstrom}, and
+\SIrange{6068}{6076}{\angstrom}. From the estimated SNR, ARES can give
+an estimate on the very important \emph{rejt} parameters
+\citep[see][for more information]{Sousa2015a}. After measuring the EWs
+with ARES, we use the MOOGme minimization described in
+Section~\ref{sub:EW_method} to determine the stellar atmospheric parameters.
+The results are presented in Figure~\ref{fig:MOOGmeTest} which shows
+$T_\mathrm{eff}$, $\log g$, [\ion{Fe}/\ion{H}], and $\xi_\mathrm{micro}$
+for MOOGme against those of \citet{Sousa2008a}.
+
+\begin{figure}[tpb]
+    \centering
+    \includegraphics[width=1.0\linewidth]{figures/figure.pdf}
+    \caption{Stellar atmospheric parameters derived by MOOGme compared
+    to the sample by \citet{Sousa2008a}.}
+    \label{fig:MOOGmeTest}
+\end{figure}
 
 
 
