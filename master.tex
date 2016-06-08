@@ -289,7 +289,7 @@ a line list with XXX elements ready to use. The results are saved to a table.
 \section{Testing MOOGme}
 \label{sec:Testing_MOOGme}
 To adequate test the EW method implemented in MOOGme we derive
-parameters from the sample by \citet{Sousa2011}. We use ARES2
+parameters from the 582 sample by \citet{Sousa2011}. We use ARES2
 to measure the EWs. ARES can give an estimate on the signal to
 noise ratio (SNR) by analyzing the continuum in given intervals.
 For solar type stars the following intervals are working well:
@@ -311,8 +311,34 @@ for MOOGme against those of \citet{Sousa2011}.
     \label{fig:MOOGmeTest}
 \end{figure}
 
+The sample contains stars with $T_\mathrm{eff}$ too cold for the line
+list used. As described in Section~\ref{sub:EW_method} we should then
+apply the \emph{teffrange} option to compensate by converting the normal
+line list by \citet{Sousa2008a} to the line list presented in \citet{Tsantaki2013}.
+However, this line list was not available when \citet{Sousa2011} derived
+parameters, hence we do not apply this option in order to make a better
+test for MOOGme.
 
+The mean of the difference between parameters from \citet{Sousa2011} and
+those by MOOGme is presented in Table~\ref{tab:MOOGmeTest}
 
+\begin{table}[htb!]
+    \caption{The difference in derived parameters by \citet{Sousa2011}
+    and MOOGme.}
+    \label{tab:MOOGmeTest}
+    \centering
+    \begin{tabular}{ll}
+      \hline\hline
+      % Add alternative name and SNR
+      Parameter             & Mean difference   \\
+      \hline
+      $T_\mathrm{eff}$      &  $50   \pm 5$     \\
+      $\log g$              &  $0.01 \pm 0.01$  \\
+      $[\ion{Fe}/\ion{H}]$  &  $0.01 \pm 0.01$  \\
+      $\xi_\mathrm{micro}$  &  $0.01 \pm 0.01$  \\
+      \hline
+    \end{tabular}
+\end{table}
 
 
 
