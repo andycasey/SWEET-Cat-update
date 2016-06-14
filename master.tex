@@ -50,7 +50,7 @@ Instituto de Astrof\'isica de Canarias, E-38205 La Laguna, Tenerife, Spain\\
 \and
 Depto. Astrof\'isica, Universidad de La Laguna (ULL), E-38206 La Laguna, Tenerife, Spain\\
 \and
-Astronomy, Scotland
+SUPA, School of Physics and Astronomy, University of St Andrews, St Andrews KY16 9SS, UK
 }
 
 
@@ -289,13 +289,8 @@ a line list with XXX elements ready to use. The results are saved to a table.
 \subsection{Testing MOOGme}
 \label{sub:Testing_MOOGme}
 To adequate test the EW method implemented in MOOGme we derive
-parameters from the 582 sample by \citet{Sousa2011}. Their procedure
-resemble the one we choose for MOOGme. \citet{Sousa2011} used ARES
-(the first version) for measuring the EWs and a minimization routine
-based on the downhill simplex method. Moreover an older version of MOOG (WHICH)
-were used for calculating the abundances.
-
-We use ARES2 to measure the EWs. ARES can give an estimate on the signal to
+parameters from the 582 sample by \citet{Sousa2011}. We use ARES2
+to measure the EWs. ARES can give an estimate on the signal to
 noise ratio (SNR) by analyzing the continuum in given intervals.
 For solar type stars the following intervals are working well:
 \SIrange{5764}{5766}{\angstrom}, \SIrange{6047}{6053}{\angstrom}, and
@@ -332,31 +327,18 @@ those by MOOGme is presented in Table~\ref{tab:MOOGmeTest}
     and MOOGme.}
     \label{tab:MOOGmeTest}
     \centering
-    \begin{tabular}{lll}
+    \begin{tabular}{ll}
       \hline\hline
       % Add alternative name and SNR
-      Parameter             & Mean difference   & Mean difference (same line list) \\
+      Parameter             & Mean difference   \\
       \hline
-      $T_\mathrm{eff}$      &  $50   \pm 5$     & $50   \pm 5$                     \\
-      $\log g$              &  $0.01 \pm 0.01$  & $0.01 \pm 0.01$                  \\
-      $[\ion{Fe}/\ion{H}]$  &  $0.01 \pm 0.01$  & $0.01 \pm 0.01$                  \\
-      $\xi_\mathrm{micro}$  &  $0.01 \pm 0.01$  & $0.01 \pm 0.01$                  \\
+      $T_\mathrm{eff}$      &  $50   \pm 5$     \\
+      $\log g$              &  $0.01 \pm 0.01$  \\
+      $[\ion{Fe}/\ion{H}]$  &  $0.01 \pm 0.01$  \\
+      $\xi_\mathrm{micro}$  &  $0.01 \pm 0.01$  \\
       \hline
     \end{tabular}
 \end{table}
-
-These offset can be due to a number of things. 1. the interpolation is
-slightly different for the two methods, but produce very similar
-results. 2. The different version of MOOG can lead to small changes
-in abundances, and hence the parameters. 3. While we do use different
-versions of ARES, the main difference here is how we set the rejt parameter.
-A different rejt paramater can lead to a systematically offset in
-[\ion{Fe}/\ion{H}]. Therefore, we applied the minimization of MOOGme
-directly on the line lists from \citet{Sousa2011}, in order to have
-identical EWs for all lines. The results are very similar, and the mean
-difference is presented in the last column of Table~\ref{tab:MOOGmeTest}.
-
-
 
 
 
@@ -489,6 +471,10 @@ the program “Programa Operacional de Factores de Competitividade
 form of the fellowship SFRH/BPD/76606/2011 and SFRH/BPD/87776/2012,
 respectively. This work also benefit from the collaboration of a
 cooperation project FCT/CAPES - 2014/2015 (FCT Proc 4.4.1.00 CAPES).
+
+AM received funding from the European Union Seventh Framework Programme
+(FP7/2007-2013) under grant agreement number 313014 (ETAEARTH).
+
 
 This research has made use of the SIMBAD database operated at CDS,
 Strasbourg (France).
