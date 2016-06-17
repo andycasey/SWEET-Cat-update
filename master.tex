@@ -1,7 +1,8 @@
 \documentclass{aa}
 % \documentclass[referee]{aa}
 \usepackage[varg]{txfonts}
-\usepackage[separate-uncertainty=true]{siunitx}
+\usepackage[separate-uncertainty=true,
+            multi-part-units=single]{siunitx}
 \usepackage[version=3]{mhchem}
 
 \sisetup{range-units = single}
@@ -84,7 +85,7 @@ SUPA, School of Physics and Astronomy, University of St Andrews, St Andrews KY16
 \label{sec:introduction}
 The study of extrasolar planetary systems is an established field of research.
 To date, over 3200 extrasolar planets have been discovered around solar-type
-stars\footnote{For an updated table we refer to \url{http://ww.exoplanet.eu}}.
+stars\footnote{For an updated table we refer to \url{http://www.exoplanet.eu}}.
 Most of these have been found thanks to the incredible precision achieved in
 photometric transit and radial velocity. Especially the latest announcement
 from the \emph{Kepler} space mission with 1284 confirmed exoplanets
@@ -104,14 +105,16 @@ the effective temperature.
 \section{MOOGme}
 \label{sec:MOOGme}
 
-MOOGme (acronym for MOOG made easy) is a new tool for analyzing spectra.
+MOOGme (acronym for MOOG made easy) is a web tool for analyzing spectra.
 MOOGme is written in Python and works as a wrapper around MOOG
 \citep{Sneden1973}, and ARES \citep{Sousa2015a} for an all-in-one tool.
 MOOG is a radiative transfer code under the assumption of local
 thermodynamic equilibrium (LTE). And ARES is a tool to measure equivalent
 widths (EW) automatically from a spectrum given a line list. MOOGme has
 four different functions: Measure EWs with ARES, synthetic fitting, EW method,
-and abundances, all described below.
+and abundances, all described below. We use the Kurucz spectral grid from
+\citet{Kurucz1993}.
+
 
 \subsection{EW measurements}
 \label{sub:EW_measurements}
@@ -127,16 +130,10 @@ required for MOOG. The output can be used for either the EW method or the
 abundance method, both described below.
 
 
-\subsection{Synthetic fitting}
-\label{sub:Synthetic_fitting}
-
-FOR MARIA :)
-
-
 
 \subsection{EW method}
 \label{sub:EW_method}
-This is the second standard method for obtaining parameters from stellar
+This is a standard method for obtaining parameters from stellar
 spectra. Here measured EWs are used to calculate abundances using a given
 stellar atmosphere model with a given set of atmospheric parameters,
 effective temperature ($T_\mathrm{eff}$), surface gravity ($\log g$),
@@ -151,14 +148,14 @@ the input [\ion{Fe}/\ion{H}] to match that of the average output
 [\ion{Fe}/\ion{H}]. Hence we have four criteria to minimize simultaneously:
 
 \begin{enumerate}
-    \item The slope between abundance and excitation potential ($a_\mathrm{EP}$).
-    \item The slope between abundance and reduced EW ($a_\mathrm{RW}$).
+    \item The slope between abundance and excitation potential ($a_\mathrm{EP}\le0.001$).
+    \item The slope between abundance and reduced EW ($a_\mathrm{RW}\le0.003$).
     \item The difference between the average abundances of \ion{Fe}{I} and
-          \ion{Fe}{II} ($\Delta$\ion{Fe}).
-    \item Input and output metallicity.
+          \ion{Fe}{II} ($\Delta\ion{Fe}=0.00$).
+    \item Input and output metallicity should be equal.
 \end{enumerate}
-
-Which we together denote as indicators.
+These criteria we denote as indicators for the physical parameters we are
+trying to minimize for.
 
 \begin{figure}[tpb]
     \centering
@@ -230,21 +227,9 @@ It is possible to run the EW method with a set of different options which
 will be described here.
 
 \begin{itemize}
-    \item[model] Change which type of model atmosphere to use. Currently the
-          following are available: Kurucz 95, Marcs, and Kurucz from APOGEE.
-    \item[weights] Calculate the slopes with an weight based on the distance
-          from the mean.
     \item[fixteff] Fix $T_\mathrm{eff}$. Same is available for $\log g$
           (fixlogg), [\ion{Fe}/\ion{H}] (fixfeh), and $\xi_\mathrm{micro}$
           (fixvt).
-    \item[iterations] The maximum number of iterations (160 by default).
-    \item[EPcrit] The criteria for $a_\mathrm{EP}$ to reach convergence (0.001
-          by default).
-    \item[RWcrit] The criteria for $a_\mathrm{RW}$ to reach convergence (0.003
-          by default).
-    \item[ABdiffcrit] The criteria for $\Delta$\ion{Fe} to reach convergence
-          (0.01 by default).
-    \item[MOOGv] The version of MOOG being used (2014 by default).
     \item[outlier] Remove outliers after the first run with the minimization
           routine and restarting the minimization from the previous best
           parameters. The options are to remove all outliers above $3\sigma$
@@ -253,13 +238,6 @@ will be described here.
     \item[autofixvt] If the minimization routine does not converge and
           $\xi_\mathrm{micro}$ is close to 0 or 10 with a significant
           $a_\mathrm{RW}$, then fix $\xi_\mathrm{micro}$.
-    \item[teffrange] This is a special option for two of the line list shipped
-          with MOOGme. The ones from \citet{Sousa2015b} and \citet{Tsantaki2013}.
-          The latter is a subset of the former optimized for cooler stars.
-          If this option is set, and the former line list is used for a cool
-          star ($T_\mathrm{eff}$ found after the minimization), then remove
-          the lines from the used line list to match the latter line list and
-          rerun the minimization routine.
     \item[refine] After the minimization is done, run it again from the best
           found parameters but with more strict criteria. If this option is set,
           it will always be the last step (after removal of outliers and the
@@ -269,7 +247,14 @@ will be described here.
 If $\xi_\mathrm{micro}$ is fixed it is changed at each iteration according to
 an empirical relation. For dwarfs it follows the one presented in
 \citet{Tsantaki2013} and for giants it follows the one presented in
-\citet{Adibekyan2015}.
+\citet{Adibekyan2015}. We use the line list presented in \citet{Sousa2008a}
+for stars. However, this line list does not work well for cool stars. This
+was fixed by \citet{Tsantaki2013} removing some lines from \citet{Sousa2008a}.
+For stars cooler than \SI{5200}{K} we rederive the atmospheric parameters
+after removing lines so the line list resemble that of \citet{Tsantaki2013}.
+
+All restarts of the minimization routine is done with initial condition at
+the last found best parameters.
 
 
 
@@ -288,7 +273,7 @@ a line list with XXX elements ready to use. The results are saved to a table.
 
 \subsection{Testing MOOGme}
 \label{sub:Testing_MOOGme}
-To adequate test the EW method implemented in MOOGme we derive
+To test the EW method implemented in MOOGme we derive
 parameters from the 582 sample by \citet{Sousa2011}. We use ARES2
 to measure the EWs. ARES can give an estimate on the signal to
 noise ratio (SNR) by analyzing the continuum in given intervals.
@@ -303,13 +288,13 @@ The results are presented in Figure~\ref{fig:MOOGmeTest} which shows
 $T_\mathrm{eff}$, $\log g$, [\ion{Fe}/\ion{H}], and $\xi_\mathrm{micro}$
 for MOOGme against those of \citet{Sousa2011}.
 
-\begin{figure}[tpb]
+\begin{figure*}[tpb]
     \centering
-    \includegraphics[width=1.0\linewidth,draft]{figures/MOOGmeTest.pdf}
+    \includegraphics[width=1.0\linewidth]{figures/MOOGmeTest.pdf}
     \caption{Stellar atmospheric parameters derived by MOOGme compared
     to the sample by \citet{Sousa2011}.}
     \label{fig:MOOGmeTest}
-\end{figure}
+\end{figure*}
 
 The sample contains stars with $T_\mathrm{eff}$ too cold for the line
 list used. As described in Section~\ref{sub:EW_method} we should then
@@ -320,26 +305,35 @@ parameters, hence we do not apply this option in order to make a better
 test for MOOGme.
 
 The mean of the difference between parameters from \citet{Sousa2011} and
-those by MOOGme is presented in Table~\ref{tab:MOOGmeTest}
+those by MOOGme is presented in Table~\ref{tab:MOOGmeTest}.
 
 \begin{table}[htb!]
     \caption{The difference in derived parameters by \citet{Sousa2011}
     and MOOGme.}
     \label{tab:MOOGmeTest}
     \centering
-    \begin{tabular}{ll}
+    \begin{tabular}{lrr}
       \hline\hline
-      % Add alternative name and SNR
-      Parameter             & Mean difference   \\
+      Parameter             &  Mean difference         & Mean difference (same line list) \\
       \hline
-      $T_\mathrm{eff}$      &  $50   \pm 5$     \\
-      $\log g$              &  $0.01 \pm 0.01$  \\
-      $[\ion{Fe}/\ion{H}]$  &  $0.01 \pm 0.01$  \\
-      $\xi_\mathrm{micro}$  &  $0.01 \pm 0.01$  \\
+      $T_\mathrm{eff}$      &  $\SI{16(36)}{K}$        & $\SI{21(11)}{K}$                 \\
+      $\log g$              &  $\num{-0.04(7)}$        & $\num{-0.007(9)}$                \\
+      $[\ion{Fe}/\ion{H}]$  &  $\num{0.03(2)}$         & $\num{0.004(9)}$                 \\
+      $\xi_\mathrm{micro}$  &  $\SI{-0.04(14)}{km/s}$  & $\SI{0.04(2)}{km/s}$             \\
       \hline
     \end{tabular}
 \end{table}
 
+We see small offsets that can be due to different versions of MOOG, different
+line lists, and different minimization routine. We therefore randomly
+selected 20 stars with different $T_\mathrm{eff}$ and used the line list
+directly from \citet{Sousa2011} to derive parameters. The results are
+presented in the last column of Table~\ref{tab:MOOGmeTest}. We note that
+the $\log gf$ values from the original line lists by \citet{Sousa2011}, which
+used the MOOG 2002 version, were not changed for the 2014 version of MOOG.
+This might lead to some errors as well. However, the offsets are very small
+and compatible with the errors on parameters normally obtained from high
+quality spectra.
 
 
 \subsection{Web interface}
@@ -361,66 +355,64 @@ HD77065. This is a spectroscopic binary according to \cite{Pourbaix2004}.
 
 The remaining 49 stars are presented in Table~\ref{tab:results}.
 
-NOTE: Maybe add some info about these targets? E.g. Instrument/telescope where they were taken, SNR.
-
 
 \begin{table*}[htb!]
     \caption{The derived parameters for the 49 stars in our sample.}
     \label{tab:results}
     \centering
-    \begin{tabular}{llllll}
+    \begin{tabular}{lllllll}
       \hline\hline
       % Add alternative name and SNR
-        Star      & $T_\mathrm{eff}$ (K) &  $\log g$ (dex)     &  [Fe/H] (dex)        &  $\xi_\mathrm{micro}$ (km/s) & $\xi_\mathrm{micro}$ fixed? \\
+        Star      & $T_\mathrm{eff}$ (K) &  $\log g$ (dex)     &  [Fe/H] (dex)        &  $\xi_\mathrm{micro}$ (km/s) & $\xi_\mathrm{micro}$ fixed? & Program ID \\
       \hline
-      WASP-76     &  $6347 \pm  52$      &  $4.29 \pm 0.08$    &  $ 0.36 \pm 0.04$    &  $1.73 \pm 0.06$             &  no \\
-      WASP-82     &  $6563 \pm  55$      &  $4.29 \pm 0.10$    &  $ 0.18 \pm 0.04$    &  $1.93 \pm 0.08$             &  no \\
-      WASP-88     &  $6450 \pm  61$      &  $4.24 \pm 0.06$    &  $ 0.03 \pm 0.04$    &  $1.79 \pm 0.09$             &  no \\
-      WASP-95     &  $5799 \pm  31$      &  $4.29 \pm 0.05$    &  $ 0.22 \pm 0.03$    &  $1.18 \pm 0.04$             &  no \\
-      WASP-97     &  $5723 \pm  52$      &  $4.37 \pm 0.07$    &  $ 0.31 \pm 0.04$    &  $1.03 \pm 0.08$             &  no \\
-      WASP-99     &  $6324 \pm  89$      &  $4.70 \pm 0.11$    &  $ 0.27 \pm 0.06$    &  $1.83 \pm 0.12$             &  no \\
-       HATS-1     &  $5969 \pm  46$      &  $4.61 \pm 0.06$    &  $-0.04 \pm 0.04$    &  $1.06 \pm 0.08$             &  no \\
-      Qatar-2     &  $4637 \pm 316$      &  $4.23 \pm 0.61$    &  $ 0.09 \pm 0.17$    &  $0.63 \pm 0.83$             &  no \\
-      WASP-44     &  $5612 \pm  80$      &  $4.47 \pm 0.30$    &  $ 0.17 \pm 0.06$    &  $1.32 \pm 0.13$             &  no \\
-     HAT-P-46     &  $6421 \pm 121$      &  $4.53 \pm 0.14$    &  $ 0.16 \pm 0.09$    &  $1.67 \pm 0.18$             &  no \\
-      WASP-52     &  $5197 \pm  83$      &  $4.47 \pm 0.30$    &  $ 0.15 \pm 0.05$    &  $1.16 \pm 0.14$             &  no \\
-      WASP-72     &  $6570 \pm  85$      &  $4.71 \pm 0.13$    &  $ 0.15 \pm 0.06$    &  $2.30 \pm 0.15$             &  no \\
-      WASP-75     &  $6203 \pm  46$      &  $4.42 \pm 0.22$    &  $ 0.24 \pm 0.03$    &  $1.45 \pm 0.06$             &  no \\
-     HAT-P-42     &  $5903 \pm  66$      &  $4.29 \pm 0.10$    &  $ 0.34 \pm 0.05$    &  $1.19 \pm 0.08$             &  no \\
-       HATS-5     &  $5383 \pm  91$      &  $4.40 \pm 0.22$    &  $ 0.08 \pm 0.06$    &  $0.91 \pm 0.14$             &  no \\
-    HD 285507     &  $4620 \pm 126$      &  $4.42 \pm 0.61$    &  $ 0.04 \pm 0.06$    &  $0.74 \pm 0.43$             &  no \\
-       HR 228     &  $5042 \pm  42$      &  $3.30 \pm 0.09$    &  $ 0.07 \pm 0.03$    &  $1.14 \pm 0.04$             &  no \\
-      SAND364     &  $4457 \pm 104$      &  $2.26 \pm 0.20$    &  $-0.04 \pm 0.06$    &  $1.60 \pm 0.11$             &  no \\
-       GJ 785     &  $5087 \pm  48$      &  $4.30 \pm 0.10$    &  $-0.01 \pm 0.03$    &  $0.69 \pm 0.10$             &  no \\
-    HD 120084     &  $4969 \pm  40$      &  $2.94 \pm 0.14$    &  $ 0.12 \pm 0.03$    &  $1.41 \pm 0.04$             &  no \\
-    HD 192263     &  $4946 \pm  46$      &  $4.43 \pm 0.14$    &  $-0.05 \pm 0.02$    &  $0.66 \pm 0.12$             &  no \\
-   HIP 107773     &  $4957 \pm  49$      &  $2.83 \pm 0.09$    &  $ 0.04 \pm 0.04$    &  $1.49 \pm 0.05$             &  no \\
-    HD 219134     &  $4767 \pm  70$      &  $4.32 \pm 0.17$    &  $-0.00 \pm 0.04$    &  $0.59 \pm 0.24$             &  no \\
-     HD 81688     &  $4906 \pm  29$      &  $2.69 \pm 0.06$    &  $-0.21 \pm 0.02$    &  $1.60 \pm 0.03$             &  no \\
-     HD 82886     &  $5124 \pm  22$      &  $3.30 \pm 0.05$    &  $-0.25 \pm 0.02$    &  $1.15 \pm 0.03$             &  no \\
-       mu Leo     &  $4605 \pm  94$      &  $2.61 \pm 0.26$    &  $ 0.25 \pm 0.06$    &  $1.64 \pm 0.11$             &  no \\
-     HD 87883     &  $4917 \pm  68$      &  $4.34 \pm 0.19$    &  $ 0.02 \pm 0.03$    &  $0.46 \pm 0.21$             &  no \\
-    HIP 11915     &  $5770 \pm  14$      &  $4.47 \pm 0.03$    &  $-0.06 \pm 0.01$    &  $0.95 \pm 0.02$             &  no \\
-      omi UMa     &  $5499 \pm  52$      &  $3.36 \pm 0.07$    &  $-0.01 \pm 0.05$    &  $1.98 \pm 0.06$             &  no \\
-       11 Com     &  $4911 \pm  38$      &  $2.68 \pm 0.08$    &  $-0.20 \pm 0.03$    &  $1.56 \pm 0.04$             &  no \\
-    HD 102272     &  $5037 \pm  80$      &  $2.72 \pm 0.25$    &  $-0.52 \pm 0.08$    &  $0.67 \pm 0.12$             &  no \\
-    HD 104985     &  $4809 \pm  48$      &  $2.73 \pm 0.08$    &  $-0.26 \pm 0.04$    &  $1.65 \pm 0.05$             &  no \\
-    HD 114762     &  $6061 \pm  83$      &  $4.70 \pm 0.08$    &  $-0.78 \pm 0.05$    &  $0.02 \pm 0.26$             &  no \\
-      omi CrB     &  $4915 \pm  33$      &  $2.74 \pm 0.08$    &  $-0.14 \pm 0.03$    &  $1.57 \pm 0.04$             &  no \\
-    HD 152581     &  $5355 \pm  82$      &  $3.65 \pm 0.18$    &  $-0.39 \pm 0.07$    &  $0.60 \pm 0.15$             &  no \\
-    HD 155358     &  $5917 \pm  51$      &  $4.12 \pm 0.08$    &  $-0.55 \pm 0.04$    &  $1.06 \pm 0.08$             &  no \\
-       42 Dra     &  $4547 \pm  55$      &  $2.23 \pm 0.10$    &  $-0.31 \pm 0.03$    &  $1.54 \pm 0.05$             &  no \\
-    HD 220842     &  $6027 \pm  30$      &  $4.35 \pm 0.05$    &  $-0.08 \pm 0.03$    &  $1.19 \pm 0.04$             &  no \\
-       14 And     &  $4797 \pm  44$      &  $2.58 \pm 0.11$    &  $-0.23 \pm 0.03$    &  $1.58 \pm 0.04$             &  no \\
-    HD 233604     &  $4925 \pm  44$      &  $2.79 \pm 0.11$    &  $-0.15 \pm 0.03$    &  $1.62 \pm 0.05$             &  no \\
-     HD 37124     &  $5468 \pm  32$      &  $4.28 \pm 0.04$    &  $-0.43 \pm 0.03$    &  $0.67 \pm 0.07$             &  no \\
-     HD 97658     &  $5182 \pm  43$      &  $4.50 \pm 0.12$    &  $-0.29 \pm 0.03$    &  $0.77 \pm 0.11$             &  no \\
-   Kepler-444     &  $5163 \pm  40$      &  $4.41 \pm 0.11$    &  $-0.50 \pm 0.03$    &  $0.78 \pm 0.10$             &  no \\
-     WASP-100     &  $6853 \pm 209$      &  $4.15 \pm 0.26$    &  $-0.30 \pm 0.12$    &  $1.87 \pm 0.02$             &  yes\\
-     HAT-P-24     &  $6470 \pm 181$      &  $4.75 \pm 0.26$    &  $-0.41 \pm 0.10$    &  $1.40 \pm 0.03$             &  yes\\
-     HAT-P-39     &  $6745 \pm 236$      &  $4.91 \pm 0.46$    &  $-0.21 \pm 0.12$    &  $1.53 \pm 0.04$             &  yes\\
-      WASP-61     &  $6265 \pm 168$      &  $4.21 \pm 0.21$    &  $-0.38 \pm 0.11$    &  $1.44 \pm 0.02$             &  yes\\
-     HD 70573     &  $5889 \pm 186$      &  $4.32 \pm 0.27$    &  $-0.42 \pm 0.13$    &  $1.14 \pm 0.01$             &  yes\\
+      WASP-76     &  $6347 \pm  52$      &  $4.29 \pm 0.08$    &  $ 0.36 \pm 0.04$    &  $1.73 \pm 0.06$             &             no              &            \\
+      WASP-82     &  $6563 \pm  55$      &  $4.29 \pm 0.10$    &  $ 0.18 \pm 0.04$    &  $1.93 \pm 0.08$             &             no              &            \\
+      WASP-88     &  $6450 \pm  61$      &  $4.24 \pm 0.06$    &  $ 0.03 \pm 0.04$    &  $1.79 \pm 0.09$             &             no              &            \\
+      WASP-95     &  $5799 \pm  31$      &  $4.29 \pm 0.05$    &  $ 0.22 \pm 0.03$    &  $1.18 \pm 0.04$             &             no              &            \\
+      WASP-97     &  $5723 \pm  52$      &  $4.37 \pm 0.07$    &  $ 0.31 \pm 0.04$    &  $1.03 \pm 0.08$             &             no              &            \\
+      WASP-99     &  $6324 \pm  89$      &  $4.70 \pm 0.11$    &  $ 0.27 \pm 0.06$    &  $1.83 \pm 0.12$             &             no              &            \\
+       HATS-1     &  $5969 \pm  46$      &  $4.61 \pm 0.06$    &  $-0.04 \pm 0.04$    &  $1.06 \pm 0.08$             &             no              &            \\
+      Qatar-2     &  $4637 \pm 316$      &  $4.23 \pm 0.61$    &  $ 0.09 \pm 0.17$    &  $0.63 \pm 0.83$             &             no              &            \\
+      WASP-44     &  $5612 \pm  80$      &  $4.47 \pm 0.30$    &  $ 0.17 \pm 0.06$    &  $1.32 \pm 0.13$             &             no              &            \\
+     HAT-P-46     &  $6421 \pm 121$      &  $4.53 \pm 0.14$    &  $ 0.16 \pm 0.09$    &  $1.67 \pm 0.18$             &             no              &            \\
+      WASP-52     &  $5197 \pm  83$      &  $4.47 \pm 0.30$    &  $ 0.15 \pm 0.05$    &  $1.16 \pm 0.14$             &             no              &            \\
+      WASP-72     &  $6570 \pm  85$      &  $4.71 \pm 0.13$    &  $ 0.15 \pm 0.06$    &  $2.30 \pm 0.15$             &             no              &            \\
+      WASP-75     &  $6203 \pm  46$      &  $4.42 \pm 0.22$    &  $ 0.24 \pm 0.03$    &  $1.45 \pm 0.06$             &             no              &            \\
+     HAT-P-42     &  $5903 \pm  66$      &  $4.29 \pm 0.10$    &  $ 0.34 \pm 0.05$    &  $1.19 \pm 0.08$             &             no              &            \\
+       HATS-5     &  $5383 \pm  91$      &  $4.40 \pm 0.22$    &  $ 0.08 \pm 0.06$    &  $0.91 \pm 0.14$             &             no              &            \\
+    HD 285507     &  $4620 \pm 126$      &  $4.42 \pm 0.61$    &  $ 0.04 \pm 0.06$    &  $0.74 \pm 0.43$             &             no              &            \\
+       HR 228     &  $5042 \pm  42$      &  $3.30 \pm 0.09$    &  $ 0.07 \pm 0.03$    &  $1.14 \pm 0.04$             &             no              &            \\
+      SAND364     &  $4457 \pm 104$      &  $2.26 \pm 0.20$    &  $-0.04 \pm 0.06$    &  $1.60 \pm 0.11$             &             no              &            \\
+       GJ 785     &  $5087 \pm  48$      &  $4.30 \pm 0.10$    &  $-0.01 \pm 0.03$    &  $0.69 \pm 0.10$             &             no              &            \\
+    HD 120084     &  $4969 \pm  40$      &  $2.94 \pm 0.14$    &  $ 0.12 \pm 0.03$    &  $1.41 \pm 0.04$             &             no              &            \\
+    HD 192263     &  $4946 \pm  46$      &  $4.43 \pm 0.14$    &  $-0.05 \pm 0.02$    &  $0.66 \pm 0.12$             &             no              &            \\
+   HIP 107773     &  $4957 \pm  49$      &  $2.83 \pm 0.09$    &  $ 0.04 \pm 0.04$    &  $1.49 \pm 0.05$             &             no              &            \\
+    HD 219134     &  $4767 \pm  70$      &  $4.32 \pm 0.17$    &  $-0.00 \pm 0.04$    &  $0.59 \pm 0.24$             &             no              &            \\
+     HD 81688     &  $4906 \pm  29$      &  $2.69 \pm 0.06$    &  $-0.21 \pm 0.02$    &  $1.60 \pm 0.03$             &             no              &            \\
+     HD 82886     &  $5124 \pm  22$      &  $3.30 \pm 0.05$    &  $-0.25 \pm 0.02$    &  $1.15 \pm 0.03$             &             no              &            \\
+       mu Leo     &  $4605 \pm  94$      &  $2.61 \pm 0.26$    &  $ 0.25 \pm 0.06$    &  $1.64 \pm 0.11$             &             no              &            \\
+     HD 87883     &  $4917 \pm  68$      &  $4.34 \pm 0.19$    &  $ 0.02 \pm 0.03$    &  $0.46 \pm 0.21$             &             no              &            \\
+    HIP 11915     &  $5770 \pm  14$      &  $4.47 \pm 0.03$    &  $-0.06 \pm 0.01$    &  $0.95 \pm 0.02$             &             no              &            \\
+      omi UMa     &  $5499 \pm  52$      &  $3.36 \pm 0.07$    &  $-0.01 \pm 0.05$    &  $1.98 \pm 0.06$             &             no              &            \\
+       11 Com     &  $4911 \pm  38$      &  $2.68 \pm 0.08$    &  $-0.20 \pm 0.03$    &  $1.56 \pm 0.04$             &             no              &            \\
+    HD 102272     &  $5037 \pm  80$      &  $2.72 \pm 0.25$    &  $-0.52 \pm 0.08$    &  $0.67 \pm 0.12$             &             no              &            \\
+    HD 104985     &  $4809 \pm  48$      &  $2.73 \pm 0.08$    &  $-0.26 \pm 0.04$    &  $1.65 \pm 0.05$             &             no              &            \\
+    HD 114762     &  $6061 \pm  83$      &  $4.70 \pm 0.08$    &  $-0.78 \pm 0.05$    &  $0.02 \pm 0.26$             &             no              &            \\
+      omi CrB     &  $4915 \pm  33$      &  $2.74 \pm 0.08$    &  $-0.14 \pm 0.03$    &  $1.57 \pm 0.04$             &             no              &            \\
+    HD 152581     &  $5355 \pm  82$      &  $3.65 \pm 0.18$    &  $-0.39 \pm 0.07$    &  $0.60 \pm 0.15$             &             no              &            \\
+    HD 155358     &  $5917 \pm  51$      &  $4.12 \pm 0.08$    &  $-0.55 \pm 0.04$    &  $1.06 \pm 0.08$             &             no              &            \\
+       42 Dra     &  $4547 \pm  55$      &  $2.23 \pm 0.10$    &  $-0.31 \pm 0.03$    &  $1.54 \pm 0.05$             &             no              &            \\
+    HD 220842     &  $6027 \pm  30$      &  $4.35 \pm 0.05$    &  $-0.08 \pm 0.03$    &  $1.19 \pm 0.04$             &             no              &            \\
+       14 And     &  $4797 \pm  44$      &  $2.58 \pm 0.11$    &  $-0.23 \pm 0.03$    &  $1.58 \pm 0.04$             &             no              &            \\
+    HD 233604     &  $4925 \pm  44$      &  $2.79 \pm 0.11$    &  $-0.15 \pm 0.03$    &  $1.62 \pm 0.05$             &             no              &            \\
+     HD 37124     &  $5468 \pm  32$      &  $4.28 \pm 0.04$    &  $-0.43 \pm 0.03$    &  $0.67 \pm 0.07$             &             no              &            \\
+     HD 97658     &  $5182 \pm  43$      &  $4.50 \pm 0.12$    &  $-0.29 \pm 0.03$    &  $0.77 \pm 0.11$             &             no              &            \\
+   Kepler-444     &  $5163 \pm  40$      &  $4.41 \pm 0.11$    &  $-0.50 \pm 0.03$    &  $0.78 \pm 0.10$             &             no              &            \\
+     WASP-100     &  $6853 \pm 209$      &  $4.15 \pm 0.26$    &  $-0.30 \pm 0.12$    &  $1.87 \pm 0.02$             &             yes             &            \\
+     HAT-P-24     &  $6470 \pm 181$      &  $4.75 \pm 0.26$    &  $-0.41 \pm 0.10$    &  $1.40 \pm 0.03$             &             yes             &            \\
+     HAT-P-39     &  $6745 \pm 236$      &  $4.91 \pm 0.46$    &  $-0.21 \pm 0.12$    &  $1.53 \pm 0.04$             &             yes             &            \\
+      WASP-61     &  $6265 \pm 168$      &  $4.21 \pm 0.21$    &  $-0.38 \pm 0.11$    &  $1.44 \pm 0.02$             &             yes             &            \\
+     HD 70573     &  $5889 \pm 186$      &  $4.32 \pm 0.27$    &  $-0.42 \pm 0.13$    &  $1.14 \pm 0.01$             &             yes             &            \\
       \hline
     \end{tabular}
 \end{table*}
@@ -487,14 +479,6 @@ Strasbourg (France).
 \bibpunct{(}{)}{;}{a}{}{,}
 \bibliographystyle{aa}
 \bibliography{thesis}
-
-
-\begin{appendix}
-\section{An appendix}
-
-
-\end{appendix}
-
 
 
 
