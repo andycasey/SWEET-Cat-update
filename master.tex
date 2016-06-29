@@ -4,6 +4,8 @@
 \usepackage[separate-uncertainty=true,
             multi-part-units=single]{siunitx}
 \usepackage[version=3]{mhchem}
+\usepackage{amsmath}
+\DeclareMathOperator{\sign}{sign}
 
 \sisetup{range-units = single}
 \sisetup{range-phrase = -}
@@ -226,6 +228,27 @@ problem. Here is how it works.
           the indicators. If we do not reach convergence, then return the best
           found parameters.
 \end{enumerate}
+This whole process is schamtically shown in Figure~\ref{fig:MOOGme_minimization}.
+The steps follows these simple equations:
+\begin{align}
+    T_\mathrm{eff}     &+= \frac{700\sign{(a_\mathrm{EP})}}{|\log(|a_\mathrm{EP}|+0.0005)|^3} \\
+    \xi_\mathrm{micro} &+= \frac{0.05\sign{(a_\mathrm{RW})}}{|\log(|a_\mathrm{RW}|+0.0005)|^3} \\
+    \log g             &-= \Delta\ion{Fe}.
+\end{align}
+The metallicity is corrected at each step so the input metallicity matches
+that of the output metallicity of the previous iteration. The functional
+form for changing the parameters are found by trial and error. We are looking
+for a function that changes rapidly for high indicators, i.e. we are far from
+the solution, and changes slowly when the indicators have low values. We add
+a small value (0.0005) for the change in $T_\mathrm{eff}$ and $\xi_\mathrm{micro}$,
+this is to make sure we do not take the logarithm to 0. After having a similar
+function for $\log g$, we see that it could change to rapidly and we will
+get unphysical request for parameters with high $T_\mathrm{eff}$ and low
+$\log g$. These combinations are not present in the grid we use, and by
+changing the step in $\log g$ as shown above this problem is solved. The
+minimum step we allow is $\{\SI{1}{K}, \SI{0.01}{dex}, \SI{0.01}{dex},
+\SI{0.01}{km/s}\}$ for $T_\mathrm{eff}$, $\log g$, $[\ion{Fe}/\ion{H}]$, and
+$\xi_\mathrm{micro}$, respectively.
 
 
 
