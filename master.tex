@@ -89,7 +89,7 @@ The study of extrasolar planetary systems is an established field of research.
 To date, over 3200 extrasolar planets have been discovered around solar-type
 stars\footnote{For an updated table we refer to \url{http://www.exoplanet.eu}}.
 Most of these have been found thanks to the incredible precision achieved in
-photometric transit and radial velocity. Especially the latest announcement
+photometric transit and radial velocity methods. Especially the latest announcement
 from the \emph{Kepler} space mission with 1284 confirmed exoplanets
 \citep{Morton2016}. The increasing number of exoplanets allow us to do
 statistical studies of the newfound worlds by analyzing their internal
@@ -122,7 +122,7 @@ after first correcting the radial velocity (RV) and using a sigma clipper to
 remove cosmic rays. The individual spectra are then combined to a single
 spectrum for a given star to increase the SNR. This single spectrum is used
 in the analysis below. We have obtained spectra from UVES \citep{UVES},
-FEROS \citep{FEROS}, HARPS \citep{HARPS}, FIES \citep{FIES}, and ESPaDONs.
+FEROS \citep{FEROS}, HARPS \citep{HARPS}, FIES \citep{FIES}, and ESPaDOnS.
 
 
 
@@ -131,26 +131,25 @@ FEROS \citep{FEROS}, HARPS \citep{HARPS}, FIES \citep{FIES}, and ESPaDONs.
 
 \section{MOOGme}
 \label{sec:MOOGme}
-
-MOOGme (acronym for MOOG made easy) is a web tool for analyzing spectra.
-MOOGme is written in Python and works as a wrapper around MOOG
+MOOGme (acronym for MOOG made easy) is a web tool\footnote{url{super-cool-address-with-MOOGme}}
+for analyzing spectra. MOOGme is written in Python and works as a wrapper around MOOG
 \citep{Sneden1973}, and ARES \citep{Sousa2015a} for an all-in-one tool.
 MOOG is a radiative transfer code under the assumption of local
-thermodynamic equilibrium (LTE). And ARES is a tool to measure equivalent
-widths (EW) automatically from a spectrum given a line list. MOOGme has
-four different functions: Measure EWs with ARES, synthetic fitting, EW method,
+thermodynamic equilibrium (LTE). And ARES is a tool to automatically measure equivalent
+widths (EW) from a spectrum given a line list. MOOGme has
+three different modes: Measure EWs with ARES, EW method,
 and abundances, all described below. We use the Kurucz atmospheric grid from
 \citet{Kurucz1993}.
 
 
 \subsection{EW measurements}
 \label{sub:EW_measurements}
-EW measurements are important for the EW method and to obtain abundances. This
+EW measurements are essential for the EW method and to obtain abundances. This
 can be done manually using a tool like IRAF, but often when dealing with a large
 sample of stars this is not a suitable way to deal with the problem. Therefore
 tools like ARES exists which can measure the EW of spectral lines automatically.
-To use this mode of MOOGme, ARES has to be installed and be in the PATH. Then
-MOOGme just need a spectrum (format should be 1D for ARES to read it) and a line
+To use this mode of MOOGme, it just need a spectrum (format should be 1D fits
+for ARES to read it) and a line
 list. For the latter, MOOGme is shipped with some line lists ready to use, in
 the format suitable for MOOGme. The output will be a line list in the format
 required for MOOG. The output can be used for either the EW method or the
@@ -160,13 +159,13 @@ abundance method, both described below.
 
 \subsection{EW method}
 \label{sub:EW_method}
-This is a standard method for obtaining parameters from stellar
-spectra. Here measured EWs are used to calculate abundances using a given
+The EW method is a standard method for obtaining parameters from stellar
+spectra. Here measured EWs are used to calculate abundances using a
 stellar atmosphere model with a given set of atmospheric parameters,
 effective temperature ($T_\mathrm{eff}$), surface gravity ($\log g$),
 metallicity ([Fe/H], where iron often is used as a proxy), and the micro
 turbulence ($\xi_\mathrm{micro}$). By removing correlations between the measured
-abundances (through the measured EWs) and the excitation potential and reduced
+abundances (through the measured EWs) and the excitation potential (EP) and reduced
 EW ($\log(EW/\lambda)$) we can constrain $T_\mathrm{eff}$ and $\xi_\mathrm{micro}$. By
 obtaining ionization balance between \ion{Fe}{I} and \ion{Fe}{II}, that is
 the average abundance of all \ion{Fe}{I} lines are equal to the average
@@ -178,11 +177,11 @@ the input [\ion{Fe}/\ion{H}] to match that of the average output
     \item The slope between abundance and excitation potential ($a_\mathrm{EP}\le0.001$).
     \item The slope between abundance and reduced EW ($a_\mathrm{RW}\le0.003$).
     \item The difference between the average abundances of \ion{Fe}{I} and
-          \ion{Fe}{II} ($\Delta\ion{Fe}=0.00$).
+          \ion{Fe}{II} ($\Delta\ion{Fe}{}=0.00$).
     \item Input and output metallicity should be equal.
 \end{enumerate}
-These criteria we denote as indicators for the physical parameters we are
-trying to minimize for.
+These criteria we denote as indicators for the physical parameters which
+we are trying to minimize for.
 
 \begin{figure}[tpb]
     \centering
@@ -196,12 +195,22 @@ known are the ones from the SciPy ecosystem\footnote{\url{http://scipy.org}}.
 There are some pros and cons with using proprietary minimization routines.
 Pros are that it is already written, and usually there are good documentation
 in libraries such as SciPy. Cons in this situation is, that most minimization
-routines are not able to handle multiple criteria at once. A work around is
+routines do not work well with vector functions returning another vector:
+\begin{align}
+    f(\{T_\mathrm{eff}, \log g, [Fe/H], \xi_\mathrm{micro}\}) = \{a_\mathrm{EP}, a_\mathrm{RW}, \Delta\ion{Fe}, \ion{Fe}{I}\}.
+\end{align}
+A work around is
 to combine the criteria into one single criteria by e.g. adding them
-quadratically and minimize that expression instead. The minimization routines
+quadratically and minimize that expression instead. Thus we have a vector
+funtion returning a scalar:
+\begin{align}
+    f(\{T_\mathrm{eff}, \log g, [Fe/H], \xi_\mathrm{micro}\}) &= \sqrt{a_\mathrm{EP}^2 + a_\mathrm{RW}^2 + \Delta\ion{Fe}^2 + \ion{Fe}{I}^2} \\
+                                                              &= z
+\end{align}
+The minimization routines
 are also not physical in the sense that they are not optimized for the problem.
-These two cons was incitement for writing a minimization optimized for our
-problem. Here is how it works.
+These two cons were incitement for writing a minimization routine optimized for the
+problem at hand. Here is how it works.
 
 \begin{enumerate}
     \item Run MOOG once with a user defined initial parameters (default is
@@ -214,14 +223,14 @@ problem. Here is how it works.
         \item $a_\mathrm{EP}$: Indicator for $T_\mathrm{eff}$. If this value
               is positive, then increase $T_\mathrm{eff}$.
         \item $a_\mathrm{RW}$: Same as above but for $\xi_\mathrm{micro}$.
-        \item $\Delta$\ion{Fe}: Same as above but for $\log g$. Positive
-              $\Delta$\ion{Fe} means $\log g$ should be decreased.
+        \item $\Delta$\ion{Fe}{}: Same as above but for $\log g$. Positive
+              $\Delta$\ion{Fe}{} means $\log g$ should be decreased.
+        \item For [\ion{Fe}/\ion{H}] it is changed to the output [\ion{Fe}/\ion{H}]
+              in each iteration.
     \end{itemize}
-    \item For [\ion{Fe}/\ion{H}] it is changed to the output [\ion{Fe}/\ion{H}]
-          in each iteration (if free).
-    \item If the new parameters have already been used in a previous, then
-          change them slightly. This is done by drawing a random number from
-          a Gaussian distribution with a mean at the previous value and a sigma
+    \item If the new parameters have already been used in a previous iteration,
+          then change them slightly. This is done by drawing a random number from
+          a Gaussian distribution with a mean at the current value and a sigma
           equal to the absolute value of the indicator.
     \item Calculate a new atmospheric model by interpolating a grid so we have
           the requested parameters and run MOOG once again.
@@ -229,8 +238,9 @@ problem. Here is how it works.
           the indicators. If we do not reach convergence, then return the best
           found parameters.
 \end{enumerate}
-This whole process is schamtically shown in Figure~\ref{fig:MOOGme_minimization}.
-The steps follows these simple equations:
+This whole process is schematically shown in Figure~\ref{fig:MOOGme_general}
+and the minimization routine itself in Figure~\ref{fig:MOOGme_minimization}.
+The stepping follows these simple equations:
 \begin{align}
     T_\mathrm{eff}     &+= \frac{700\sign{(a_\mathrm{EP})}}{|\log(|a_\mathrm{EP}|+0.0005)|^3} \\
     \xi_\mathrm{micro} &+= \frac{0.05\sign{(a_\mathrm{RW})}}{|\log(|a_\mathrm{RW}|+0.0005)|^3} \\
@@ -238,20 +248,18 @@ The steps follows these simple equations:
 \end{align}
 The metallicity is corrected at each step so the input metallicity matches
 that of the output metallicity of the previous iteration. The functional
-form for changing the parameters are found by trial and error. We are looking
+form for changing the parameters were found by trial and error. We are looking
 for a function that changes rapidly for high indicators, i.e. we are far from
 the solution, and changes slowly when the indicators have low values. We add
 a small value (0.0005) for the change in $T_\mathrm{eff}$ and $\xi_\mathrm{micro}$,
-this is to make sure we do not take the logarithm to 0. After having a similar
-function for $\log g$, we see that it could change to rapidly and we will
-get unphysical request for parameters with high $T_\mathrm{eff}$ and low
+in order not to take the logarithm of 0. After having a similar
+function for $\log g$, we see that it could change too rapidly and we will
+get unphysical requests for parameters with high $T_\mathrm{eff}$ and low
 $\log g$. These combinations are not present in the grid we use, and by
 changing the step in $\log g$ as shown above this problem is solved. The
 minimum step we allow is $\{\SI{1}{K}, \SI{0.01}{dex}, \SI{0.01}{dex},
 \SI{0.01}{km/s}\}$ for $T_\mathrm{eff}$, $\log g$, $[\ion{Fe}/\ion{H}]$, and
 $\xi_\mathrm{micro}$, respectively.
-
-
 
 \begin{figure}[tpb]
     \centering
@@ -261,13 +269,12 @@ $\xi_\mathrm{micro}$, respectively.
     \label{fig:MOOGme_minimization}
 \end{figure}
 
-
-
-
 By using the indicators like this, we can relative fast reach convergence.
+Typical calculation time for an FGKM dwarf with a high quality spectrum
+is around $\SI{2}{min}$.
 There are some interdependencies among the indicators. E.g. by changing
 $T_\mathrm{eff}$ all indicators will be affected, however the effect is
-strongest for $a_\mathrm{EP}$.
+strongest for $a_\mathrm{EP}$, so we ignore this interdependence.
 
 \subsubsection{Options}
 \label{subs:EWoptions}
@@ -288,15 +295,16 @@ will be described here.
           $a_\mathrm{RW}$, then fix $\xi_\mathrm{micro}$.
     \item \emph{refine}: After the minimization is done, run it again from the best
           found parameters but with more strict criteria. If this option is set,
-          it will always be the last step (after removal of outliers and the
-          use of teffrange).
+          it will always be the last step (after removal of outliers).
 \end{itemize}
 If $\xi_\mathrm{micro}$ is fixed it is changed at each iteration according to
 an empirical relation. For dwarfs it follows the one presented in
 \citet{Tsantaki2013} and for giants it follows the one presented in
-\citet{Adibekyan2015}. We use the line list presented in \citet{Sousa2008a}
-for stars. However, this line list does not work well for cool stars. This
-was fixed by \citet{Tsantaki2013} removing some lines from \citet{Sousa2008a}.
+\citet{Adibekyan2015}.
+
+We use the line list presented in \citet{Sousa2008a}. However, this line list
+does not work well for cool stars. This
+was fixed in \citet{Tsantaki2013} by removing some lines from \citet{Sousa2008a}.
 For stars cooler than \SI{5200}{K} we rederive the atmospheric parameters
 after removing lines so the line list resemble that of \citet{Tsantaki2013}.
 
@@ -304,18 +312,13 @@ All restarts of the minimization routine is done with initial condition at
 the last found best parameters.
 
 
-
 \subsection{Abundance method}
 \label{sub:Abundance_method}
 
-We made a mode to calculate abundances for different elements based on the
-measured EW. Here we require a line list with the EW of the elements and
-the corresponding atmospheric parameters for the star of interest. We provide
-a line list with XXX elements ready to use. The results are saved to a table.
-
-
-
-
+With the line list from \citet{Adibekyan...} with XXX different elements
+it is possible to measure abundances for these elements by combining the
+ARES mode to measure the EWs and the EW method mode to obtain the atmospheric
+parameters. The abundances are saved to a table.
 
 
 \subsection{Testing MOOGme}
@@ -345,14 +348,13 @@ for MOOGme against those of \citet{Sousa2011}.
 
 The sample contains stars with $T_\mathrm{eff}$ too cold for the line
 list used. As described in Section~\ref{sub:EW_method} we should then
-apply the \emph{teffrange} option to compensate by converting the normal
-line list by \citet{Sousa2008a} to the line list presented in \citet{Tsantaki2013}.
-However, this line list was not available when \citet{Sousa2011} derived
-parameters, hence we do not apply this option in order to make a better
-test for MOOGme.
+convert the line list by \citet{Sousa2008a} to the line list presented
+in \citet{Tsantaki2013}. However, since this line list was not available
+when \citet{Sousa2011} derived parameters, we do not make this change
+in order to make a better test for MOOGme.
 
 The mean of the difference between parameters from \citet{Sousa2011} and
-those by MOOGme is presented in Table~\ref{tab:MOOGmeTest}.
+those by MOOGme are presented in Table~\ref{tab:MOOGmeTest}.
 
 \begin{table}[htb!]
     \caption{The difference in derived parameters by \citet{Sousa2011}
@@ -371,9 +373,9 @@ those by MOOGme is presented in Table~\ref{tab:MOOGmeTest}.
     \end{tabular}
 \end{table}
 
-We see small offsets that can be due to different versions of MOOG, different
-line lists, and different minimization routine. We therefore randomly
-selected 20 stars with different $T_\mathrm{eff}$ and used the line list
+We see small offsets that can be due to different versions of MOOG, measured
+line lists, interpolation of atmosphere grid, and minimization routine. We therefore randomly
+selected 20 stars with different $T_\mathrm{eff}$ and used the line lists
 directly from \citet{Sousa2011} to derive parameters. The results are
 presented in the last column of Table~\ref{tab:MOOGmeTest}. We note that
 the $\log gf$ values from the original line lists by \citet{Sousa2011}, which
@@ -385,6 +387,8 @@ quality spectra.
 
 \subsection{Web interface}
 \label{sub:Web interface}
+NOTE: This section is probably not necessary...
+
 We provide a web interface for MOOGme. In the web interface it is
 possible to use some of the line list provided with MOOGme to
 measure EWs of a spectrum (has to be provided by the user). This
@@ -401,7 +405,6 @@ Here we present the sample of 50 stars. We were unable to derive parameters for
 HD77065. This is a spectroscopic binary according to \cite{Pourbaix2004}.
 
 The remaining 49 stars are presented in Table~\ref{tab:results}.
-
 
 \begin{table*}[htb!]
     \caption{The derived parameters for the 49 stars in our sample.}
@@ -463,8 +466,6 @@ The remaining 49 stars are presented in Table~\ref{tab:results}.
       \hline
     \end{tabular}
 \end{table*}
-
-
 We present a Hertzprung-Russel diagram (HRD) of our sample in
 Figure~\ref{fig:HRD}.
 \begin{figure}[tpb]
@@ -479,7 +480,7 @@ Figure~\ref{fig:HRD}.
 \end{figure}
 
 Figure~\ref{fig:HRD} is made with a tool for post processing the results
-saved to a table by MOOGme. We also use \emph{isochrones} \citep{Morton2015}
+saved to a table by MOOGme. We also use isochrones \citep{Morton2015}
 to give an estimate of the age. The mass estimation is based on the relation
 by \citet{Torres2010}. The age estimation is dependent on the mass of the
 star and the metallicity, which can be seen Figure~\ref{fig:age}.
