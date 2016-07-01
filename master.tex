@@ -22,7 +22,7 @@
 \def\aaps{A\&A Supp.}
 \def\prd{Phys. Rev. D}
 \def\prl{Phys. Rev. Lett.}
-\def\araa{ARA\&A}       % Annual Review of Astron and Astrophys
+\def\araa{ARA\&A}
 
 \begin{document}
 
@@ -86,12 +86,11 @@ SUPA, School of Physics and Astronomy, University of St Andrews, St Andrews KY16
 \section{Introduction}
 \label{sec:introduction}
 The study of extrasolar planetary systems is an established field of research.
-To date, over 3200 extrasolar planets have been discovered around solar-type
+To date, over 3400 extrasolar planets have been discovered around solar-type
 stars\footnote{For an updated table we refer to \url{http://www.exoplanet.eu}}.
 Most of these have been found thanks to the incredible precision achieved in
-photometric transit and radial velocity methods. Especially the latest announcement
-from the \emph{Kepler} space mission with 1284 confirmed exoplanets
-\citep{Morton2016}. The increasing number of exoplanets allow us to do
+photometric transit and radial velocity methods. The increasing number of
+exoplanets allow us to do
 statistical studies of the newfound worlds by analyzing their internal
 structure, atmospheric composition, with more.
 
@@ -107,8 +106,16 @@ homogeneous way using the method described in \citet{Sousa2011}. This in turn
 allow us to study planet hosting stars in a homogeneous way and thus
 new correlations may be found, or higher statistical certainty will be
 gained on already discovered correlations for planet hosting stars.
+Analyzing high quality spectra (high spectral resolution and high signal
+to noise ratio (SNR)) for a large sample of stars are both time consuming
+and very timely due to the amount of optical spectrographs with a high
+spectral resolution and a high request for observations. Additionally,
+a number of near-IR spectrographs are either planned or already available
+making the task of analyzing the increasing amount of spectra even more
+important. In the era of large data sets, computation time has to be decreased
+as much as possible without compromising the quality of the results.
 
-THIS IS A TEST!
+
 
 \section{Data}
 \label{sec:data}
@@ -138,8 +145,9 @@ for analyzing spectra. MOOGme is written in Python and works as a wrapper around
 MOOG is a radiative transfer code under the assumption of local
 thermodynamic equilibrium (LTE). And ARES is a tool to automatically measure equivalent
 widths (EW) from a spectrum given a line list. MOOGme has
-three different modes: Measure EWs with ARES, EW method,
-and abundances, all described below. We use the Kurucz atmospheric grid from
+three different modes: i) Measure EWs using ARES, ii) derive stellar parameters
+from a set of measured \ion{Fe}{I} and \ion{Fe}{II} line EWs, and iii)
+measure abundances for XXX elements, all described below. We use the Kurucz atmospheric grid from
 \citet{Kurucz1993}.
 
 
@@ -160,8 +168,7 @@ abundance method, both described below.
 
 \subsection{EW method}
 \label{sub:EW_method}
-The EW method is a standard method for obtaining parameters from stellar
-spectra. Here measured EWs are used to calculate abundances using a
+With measured EWs of \ion{Fe}{I} and \ion{Fe}{II} lines we calculate abundances using a
 stellar atmosphere model with a given set of atmospheric parameters,
 effective temperature ($T_\mathrm{eff}$), surface gravity ($\log g$),
 metallicity ([Fe/H], where iron often is used as a proxy), and the micro
@@ -178,11 +185,12 @@ the input [\ion{Fe}/\ion{H}] to match that of the average output
     \item The slope between abundance and excitation potential ($a_\mathrm{EP}\le0.001$).
     \item The slope between abundance and reduced EW ($a_\mathrm{RW}\le0.003$).
     \item The difference between the average abundances of \ion{Fe}{I} and
-          \ion{Fe}{II} ($\Delta\ion{Fe}{}=0.00$).
+          \ion{Fe}{II} ($\Delta\ion{Fe}{}\le0.01$).
     \item Input and output metallicity should be equal.
 \end{enumerate}
 These criteria we denote as indicators for the physical parameters which
-we are trying to minimize for.
+we are trying to minimize for. We denote this method for obtaining stellar
+parameters for the EW method.
 
 \begin{figure}[tpb]
     \centering
@@ -282,9 +290,10 @@ It is possible to run the EW method with a set of different options which
 will be described here.
 
 \begin{itemize}
-    \item \emph{fixteff}: Fix $T_\mathrm{eff}$. Same is available for $\log g$
-          (fixlogg), [\ion{Fe}/\ion{H}] (fixfeh), and $\xi_\mathrm{micro}$
-          (fixvt).
+    \item \emph{fixteff}: Fix $T_\mathrm{eff}$ and derive the other parameters.
+          Same is available for $\log g$ (fixlogg), [\ion{Fe}/\ion{H}]
+          (fixfeh), and $\xi_\mathrm{micro}$ (fixvt). One or more parameters
+          can be fixed.
     \item \emph{outlier}: Remove outliers after the first run with the minimization
           routine and restarting the minimization from the previous best
           parameters. The options are to remove all outliers above $3\sigma$
@@ -292,10 +301,15 @@ will be described here.
           iteratively.
     \item \emph{autofixvt}: If the minimization routine does not converge and
           $\xi_\mathrm{micro}$ is close to 0 or 10 with a significant
-          $a_\mathrm{RW}$, then fix $\xi_\mathrm{micro}$.
+          $a_\mathrm{RW}$, then fix $\xi_\mathrm{micro}$. This option was added
+          since we see this behavior in some cases. The solution is typically
+          to restart the minimization manually with $\xi_\mathrm{micro}$
+          fixed.
     \item \emph{refine}: After the minimization is done, run it again from the best
           found parameters but with more strict criteria. If this option is set,
-          it will always be the last step (after removal of outliers).
+          it will always be the last step (after removal of outliers). The
+          convergence criteria can be changed by the user, but we recommend
+          using the defaults provided above.
 \end{itemize}
 If $\xi_\mathrm{micro}$ is fixed it is changed at each iteration according to
 an empirical relation. For dwarfs it follows the one presented in
@@ -303,10 +317,10 @@ an empirical relation. For dwarfs it follows the one presented in
 \citet{Adibekyan2015}.
 
 We use the line list presented in \citet{Sousa2008a}. However, this line list
-does not work well for cool stars. This
-was fixed in \citet{Tsantaki2013} by removing some lines from \citet{Sousa2008a}.
-For stars cooler than \SI{5200}{K} we rederive the atmospheric parameters
-after removing lines so the line list resemble that of \citet{Tsantaki2013}.
+does not work well for cool stars. This was fixed in \citet{Tsantaki2013}
+by removing some lines from \citet{Sousa2008a}. For stars cooler than
+\SI{5200}{K} we automatically rederive the atmospheric parameters after
+removing lines so the line list resemble that of \citet{Tsantaki2013}.
 
 All restarts of the minimization routine is done with initial condition at
 the last found best parameters.
@@ -374,7 +388,9 @@ those by MOOGme are presented in Table~\ref{tab:MOOGmeTest}.
 \end{table}
 
 We see small offsets that can be due to different versions of MOOG, measured
-line lists, interpolation of atmosphere grid, and minimization routine. We therefore randomly
+line lists, interpolation of atmosphere grid, and minimization routine. Most
+likely the difference will be due to different used \emph{rejt} parameters
+in ARES, which can alter the EWs and hence the parameters. We therefore randomly
 selected 20 stars with different $T_\mathrm{eff}$ and used the line lists
 directly from \citet{Sousa2011} to derive parameters. The results are
 presented in the last column of Table~\ref{tab:MOOGmeTest}. We note that
@@ -387,7 +403,7 @@ quality spectra.
 
 \subsection{Web interface}
 \label{sub:Web interface}
-NOTE: This section is probably not necessary...
+NOTE: More will be written once we have a web page.
 
 We provide a web interface for MOOGme. In the web interface it is
 possible to use some of the line list provided with MOOGme to
