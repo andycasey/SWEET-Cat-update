@@ -273,8 +273,8 @@ function for $\log g$, we see that it could change too rapidly and we will
 get unphysical requests for parameters with high $T_\mathrm{eff}$ and low
 $\log g$. These combinations are not present in the grid we use, and by
 changing the step in $\log g$ as shown above this problem is solved. The
-minimum step we allow is $\{\SI{1}{K}, \SI{0.01}{dex}, \SI{0.01}{dex},
-\SI{0.01}{km/s}\}$ for $T_\mathrm{eff}$, $\log g$, $[\ion{Fe}/\ion{H}]$, and
+minimum step we allow is $\{   {1}{K},    {0.01}{dex},    {0.01}{dex},
+   {0.01}{km/s}\}$ for $T_\mathrm{eff}$, $\log g$, $[\ion{Fe}/\ion{H}]$, and
 $\xi_\mathrm{micro}$, respectively.
 
 \begin{figure}[tpb]
@@ -287,7 +287,7 @@ $\xi_\mathrm{micro}$, respectively.
 
 By using the indicators like this, we can relative fast reach convergence.
 Typical calculation time for an FGKM dwarf with a high quality spectrum
-is around $\SI{2}{min}$.
+is around $   {2}{min}$.
 There are some interdependencies among the indicators. E.g. by changing
 $T_\mathrm{eff}$ all indicators will be affected, however the effect is
 strongest for $a_\mathrm{EP}$, so we ignore this interdependence.
@@ -327,7 +327,7 @@ an empirical relation. For dwarfs it follows the one presented in
 We use the line list presented in \citet{Sousa2008a}. However, this line list
 does not work well for cool stars. This was fixed in \citet{Tsantaki2013}
 by removing some lines from \citet{Sousa2008a}. For stars cooler than
-\SI{5200}{K} we automatically rederive the atmospheric parameters after
+   {5200}{K} we automatically rederive the atmospheric parameters after
 removing lines so the line list resemble that of \citet{Tsantaki2013}.
 
 All restarts of the minimization routine is done with initial condition at
@@ -387,10 +387,10 @@ those by MOOGme are presented in Table~\ref{tab:MOOGmeTest}.
       \hline\hline
       Parameter             &  Mean difference         & Mean difference (same line list) \\
       \hline
-      $T_\mathrm{eff}$      &  $\SI{16(36)}{K}$        & $\SI{21(11)}{K}$                 \\
+      $T_\mathrm{eff}$      &  $   {16(36)}{K}$        & $   {21(11)}{K}$                 \\
       $\log g$              &  $\num{-0.04(7)}$        & $\num{-0.007(9)}$                \\
       $[\ion{Fe}/\ion{H}]$  &  $\num{0.03(2)}$         & $\num{0.004(9)}$                 \\
-      $\xi_\mathrm{micro}$  &  $\SI{-0.04(14)}{km/s}$  & $\SI{0.04(2)}{km/s}$             \\
+      $\xi_\mathrm{micro}$  &  $   {-0.04(14)}{km/s}$  & $   {0.04(2)}{km/s}$             \\
       \hline
     \end{tabular}
 \end{table}
